@@ -1,7 +1,10 @@
 import express from "express";
 import dotenv from "dotenv";
 import { connectToDatabase, pool } from "./src/config/database.js";
-import authRoutes from "./src/routes/auth.route.js";
+import authRoute from './src/routes/auth.route.js';
+import usersRoutes from './src/routes/users.routes.js';
+import storesRoutes from './src/routes/stores.routes.js';
+import ratingsRoutes from './src/routes/ratings.routes.js';
 
 dotenv.config();
 
@@ -9,7 +12,10 @@ const app = express();
 
 app.use(express.json());
 
-app.use('/', authRoutes);
+app.use('/api/auth', authRoute);
+app.use('/api/users', usersRoutes);
+app.use('/api/stores', storesRoutes);
+app.use('/api/ratings', ratingsRoutes);
 
 const startServer = async () => {
     try {

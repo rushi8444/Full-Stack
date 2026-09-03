@@ -1,9 +1,9 @@
-import db from "../config/db.js";
+import db from "../config/database.js";
 
 class RatingModel {
 
-    // Create or update a user's rating for a store
-    static async upsert({ userId, storeId, rating }) {
+    // Create a user's only rating for a store
+    static async create({ userId, storeId, rating }) {
         const query = `
             INSERT INTO ratings (
                 user_id,
@@ -11,11 +11,6 @@ class RatingModel {
                 rating
             )
             VALUES ($1, $2, $3)
-
-            ON CONFLICT (user_id, store_id)
-            DO UPDATE SET
-                rating = EXCLUDED.rating,
-                updated_at = CURRENT_TIMESTAMP
 
             RETURNING
                 id,

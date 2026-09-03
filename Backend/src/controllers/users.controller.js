@@ -7,7 +7,7 @@ class UsersController {
             const userId = req.user.id;
             const { currentPassword, newPassword } = req.body;
             
-            const user = await UserModel.findById(userId);
+            const user = await UserModel.findByIdWithPassword(userId);
 
             if(!user){
                 return res.status(404).json({
@@ -96,25 +96,52 @@ class UsersController {
 
     static async getUsers(req,res){
         try {
-      const { search = '', role = '', sortBy = 'name', sortOrder = 'ASC' } = req.query;
+            const { search = '', role = '', sortBy = 'name', sortOrder = 'ASC' } = req.query;
 
-      const users = await UserModel.findAll({
-        search,
-        role,
-        sortBy,
-        sortOrder,
-      });
+            const users = await UserModel.findAll({
+                search,
+                role,
+                sortBy,
+                sortOrder,
+            });
 
-      return res.status(200).json({
-        success: true,
-        data: users,
-      });
-    } catch (error) {
-      return res.status(500).json({
-        success: false,
-        message: 'Error fetching users list.',
-        error: error.message,
-      });
+            return res.status(200).json({
+                success: true,
+                data: users,
+            });
+        } catch (error) {
+            return res.status(500).json({
+            success: false,
+            message: 'Error fetching users list.',
+            error: error.message,
+        });
+    }
+    }
+
+    static async getUserById(req,res){
+        try{
+            const {id} = req.body;
+            const user = await UserModel.findById(id);
+
+            if(!user){
+                return res.status(404).json({
+                    success : false,
+                    message : "User not found"
+                })
+            }
+
+            return res.status(200).json({
+                success : true,
+                data : user
+            })
+        }catch(error){
+            return res.status(500).json({
+                success : false,
+                message : "Internal server error during fetching user by name.",
+                error : error.message
+            })
+        }
     }
 }
-}
+
+export default UsersController;

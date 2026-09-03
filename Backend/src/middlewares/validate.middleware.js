@@ -58,9 +58,35 @@ export const userValidationRules = () => [
         .withMessage("Address cannot exceed 400 characters.")
 ];
 
+// Store creation validation
+export const storeValidationRules = () => [
+    body("name")
+        .trim()
+        .notEmpty()
+        .withMessage("Store name is required.")
+        .isLength({ max: 255 })
+        .withMessage("Store name cannot exceed 255 characters."),
+    body("email")
+        .trim()
+        .notEmpty()
+        .withMessage("Email is required.")
+        .isEmail()
+        .withMessage("Must be a valid email address.")
+        .normalizeEmail(),
+    body("address")
+        .trim()
+        .notEmpty()
+        .withMessage("Address is required.")
+        .isLength({ max: 400 })
+        .withMessage("Address cannot exceed 400 characters.")
+];
+
 
 // Update password validation
 export const updatePasswordValidationRules = () => [
+    body("currentPassword")
+        .notEmpty()
+        .withMessage("Current password is required."),
     body("newPassword")
         .notEmpty()
         .withMessage("New password is required.")
@@ -77,6 +103,9 @@ export const updatePasswordValidationRules = () => [
 
 // Rating validation
 export const ratingValidationRules = () => [
+    body("storeId")
+        .notEmpty()
+        .withMessage("Store ID is required."),
     body("rating")
         .notEmpty()
         .withMessage("Rating is required.")

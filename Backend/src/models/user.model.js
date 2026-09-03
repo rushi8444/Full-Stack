@@ -73,6 +73,26 @@ class UserModel {
         return rows[0];
     }
 
+    // Find a user with the password hash for credential checks
+    static async findByIdWithPassword(id) {
+        const query = `
+            SELECT
+                id,
+                name,
+                email,
+                password,
+                address,
+                role,
+                created_at
+            FROM users
+            WHERE id = $1;
+        `;
+
+        const { rows } = await db.query(query, [id]);
+
+        return rows[0];
+    }
+
 
     // Update password
     static async updatePassword(userId, hashedPassword) {
