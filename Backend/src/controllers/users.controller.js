@@ -63,9 +63,8 @@ class UsersController {
             if(existingUser){
                 return res.status(409).json({
                     success: false,
-                    message: "An account with this email already exists.",
-                    error: error.message
-                })
+                    message: "An account with this email already exists."
+                });
             }
 
             const saltRounds = 10;
@@ -120,7 +119,7 @@ class UsersController {
 
     static async getUserById(req,res){
         try{
-            const {id} = req.body;
+            const id = req.params.id || req.body?.id;
             const user = await UserModel.findById(id);
 
             if(!user){

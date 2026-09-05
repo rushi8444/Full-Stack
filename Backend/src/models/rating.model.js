@@ -11,7 +11,10 @@ class RatingModel {
                 rating
             )
             VALUES ($1, $2, $3)
-
+            ON CONFLICT (user_id, store_id)
+            DO UPDATE SET
+                rating = EXCLUDED.rating,
+                updated_at = CURRENT_TIMESTAMP
             RETURNING
                 id,
                 user_id,

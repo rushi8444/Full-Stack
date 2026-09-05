@@ -1,4 +1,5 @@
 import express from "express";
+import cors from "cors";
 import dotenv from "dotenv";
 import { connectToDatabase, pool } from "./src/config/database.js";
 import authRoute from './src/routes/auth.route.js';
@@ -10,6 +11,7 @@ dotenv.config();
 
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 
 app.use('/api/auth', authRoute);

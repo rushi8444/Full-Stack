@@ -21,7 +21,7 @@ class StoresController {
     static async getStores(req,res){
         try{
             const {search = '', sortBy = 'name', sortOrder = 'ASC'} = req.query;
-            const stores = await StoreModel.findAll({search, sortBy, sortOrder});
+            const stores = await StoreModel.findAll({search, userId: req.user?.id, sortBy, sortOrder});
             res.status(200).json(stores);
         }catch(error){
             console.error("Error fetching stores:", error);

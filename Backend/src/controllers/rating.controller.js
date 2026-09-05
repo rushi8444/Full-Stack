@@ -9,17 +9,14 @@ class RatingsController {
             const userId = req.user.id;
 
             const newRating = await RatingModel.create({ storeId, userId, rating });
-            return res.status(201).json(newRating);
+            return res.status(200).json({
+                success: true,
+                message: "Rating saved successfully.",
+                ...newRating
+            });
         }catch(error){
-            if (error.code === "23505") {
-              return res.status(409).json({
-                success: false,
-                message: "You have already rated this store."
-              });
-            }
-
             console.error("Error creating rating:", error);
-            res.status(500).json({ error: "Failed to create rating" });
+            res.status(500).json({ success: false, error: "Failed to submit rating", message: error.message });
         }
 
     }
