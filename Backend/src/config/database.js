@@ -5,14 +5,16 @@ const { Pool } = pg;
 
 dotenv.config();
 
-const isSupabase =
-    process.env.DB_HOST?.includes("supabase.co") ||
-    process.env.DATABASE_URL?.includes("supabase.co");
+const isRemoteOrSupabase =
+    process.env.DB_HOST?.includes("supabase") ||
+    process.env.DATABASE_URL?.includes("supabase") ||
+    process.env.NODE_ENV === "production" ||
+    process.env.DB_SSL === "true";
 
 const poolConfig = process.env.DATABASE_URL
     ? {
           connectionString: process.env.DATABASE_URL,
-          ssl: isSupabase ? { rejectUnauthorized: false } : false,
+          ssl: isRemoteOrSupabase ? { rejectUnauthorized: false } : false,
       }
     : {
           user: process.env.DB_USER,
@@ -20,9 +22,7 @@ const poolConfig = process.env.DATABASE_URL
           database: process.env.DB_NAME,
           password: process.env.DB_PASSWORD,
           port: process.env.DB_PORT ? Number(process.env.DB_PORT) : 5432,
-          ssl: isSupabase || process.env.DB_SSL === "true"
-              ? { rejectUnauthorized: false }
-              : false,
+          ssl: isRemoteOrSupabase ? { rejectUnauthorized: false } : false,
       };
 
 const pool = new Pool({
