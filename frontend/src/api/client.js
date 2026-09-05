@@ -1,7 +1,12 @@
 import axios from 'axios';
 
+const API_BASE_URL =
+  import.meta.env.VITE_API_URL
+    ? `${import.meta.env.VITE_API_URL.replace(/\/+$/, '')}/api`
+    : 'https://full-stack-t4rd.onrender.com/api';
+
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
