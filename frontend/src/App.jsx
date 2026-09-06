@@ -11,10 +11,10 @@ const AppContent = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+      <div className="min-h-screen flex items-center justify-center bg-zinc-50">
         <div className="text-center">
-          <div className="animate-spin w-10 h-10 border-4 border-indigo-600 border-t-transparent rounded-full mx-auto mb-4" />
-          <p className="text-sm font-semibold text-slate-600">Loading StoreSphere...</p>
+          <div className="animate-spin w-5 h-5 border-2 border-zinc-900 border-t-transparent rounded-full mx-auto mb-3" />
+          <p className="text-xs text-zinc-500 font-medium">Loading...</p>
         </div>
       </div>
     );
@@ -25,7 +25,7 @@ const AppContent = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50/70 text-slate-900">
+    <div className="min-h-screen flex flex-col bg-zinc-50 text-zinc-900">
       <Navbar />
 
       <main className="flex-1 pb-16">
@@ -34,10 +34,10 @@ const AppContent = () => {
         {user?.role === 'Normal User' && <UserDashboard />}
       </main>
 
-      <footer className="border-t border-slate-200/80 bg-white py-6 text-center text-xs text-slate-400">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <span>StoreSphere Ratings & Community Feedback Platform</span>
-          <span>Node.js Express + PostgreSQL + React Tailwind</span>
+      <footer className="border-t border-zinc-200 py-6 text-xs text-zinc-400">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 flex items-center justify-between">
+          <span>Stores Directory</span>
+          <span>&copy; {new Date().getFullYear()}</span>
         </div>
       </footer>
     </div>

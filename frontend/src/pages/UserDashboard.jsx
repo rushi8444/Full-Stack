@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { storesApi, ratingsApi, getErrorMessage } from '../api/client';
-import { Store, Search, ArrowUpDown, MapPin, Mail, Star, CheckCircle2, AlertCircle, Sparkles } from 'lucide-react';
+import { Store, Search, ArrowUpDown, MapPin, Mail, Star, Check, AlertCircle } from 'lucide-react';
 import StarRating from '../components/StarRating';
 
 export const UserDashboard = () => {
@@ -54,10 +54,9 @@ export const UserDashboard = () => {
 
       setNotification({
         type: 'success',
-        message: `Successfully rated ${newRating} star${newRating > 1 ? 's' : ''}!`,
+        message: `Submitted ${newRating} star${newRating > 1 ? 's' : ''}`,
       });
 
-      // Refresh to pull recalculated overall store rating
       const res = await storesApi.getStores({ search, sortBy, sortOrder });
       if (Array.isArray(res.data)) {
         setStores(res.data);
@@ -67,98 +66,87 @@ export const UserDashboard = () => {
         type: 'error',
         message: getErrorMessage(err),
       });
-      loadStores(); // revert on error
+      loadStores();
     } finally {
       setRatingLoadingStoreId(null);
-      setTimeout(() => setNotification(null), 3500);
+      setTimeout(() => setNotification(null), 3000);
     }
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-      {/* Hero / Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 mb-2">
-            <Sparkles size={13} />
-            <span>Community Store Directory</span>
-          </div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Explore & Rate Stores</h1>
-          <p className="text-sm text-slate-500">
-            Browse registered stores in your area and share your experience with quick 1-5 star ratings.
-          </p>
+          <h1 className="text-lg font-semibold text-zinc-900 tracking-tight">Stores</h1>
+          <p className="text-xs text-zinc-500">Discover and rate registered stores.</p>
         </div>
 
-        {/* Global Toast Notification */}
         {notification && (
           <div
-            className={`p-3 rounded-xl border text-xs font-medium flex items-center gap-2 animate-fadeIn ${
+            className={`px-3 py-1.5 rounded-lg border text-xs font-medium flex items-center gap-2 ${
               notification.type === 'success'
-                ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
-                : 'bg-rose-50 border-rose-200 text-rose-800'
+                ? 'bg-zinc-100 border-zinc-300 text-zinc-900'
+                : 'bg-red-50 border-red-200 text-red-700'
             }`}
           >
             {notification.type === 'success' ? (
-              <CheckCircle2 size={16} className="text-emerald-500 shrink-0" />
+              <Check size={14} className="text-zinc-900 shrink-0" />
             ) : (
-              <AlertCircle size={16} className="text-rose-500 shrink-0" />
+              <AlertCircle size={14} className="text-red-600 shrink-0" />
             )}
             <span>{notification.message}</span>
           </div>
         )}
       </div>
 
-      {/* Search & Sort Controls Bar */}
-      <div className="p-4 bg-white rounded-2xl border border-slate-200/80 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
-        {/* Search */}
-        <div className="relative flex-1 w-full max-w-lg">
-          <Search size={16} className="absolute left-3.5 top-3 text-slate-400" />
+      {/* Filter / Search Bar */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-2 bg-white rounded-lg border border-zinc-200">
+        <div className="relative flex-1 w-full">
+          <Search size={14} className="absolute left-3 top-2.5 text-zinc-400" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search stores by name or address..."
-            className="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors"
+            className="w-full pl-8 pr-3 py-1.5 text-xs bg-transparent border-0 focus:outline-none text-zinc-900 placeholder:text-zinc-400"
           />
         </div>
 
-        {/* Sort Selector */}
-        <div className="flex items-center gap-2 w-full sm:w-auto justify-end text-sm text-slate-600">
-          <ArrowUpDown size={15} className="text-slate-400" />
+        <div className="flex items-center gap-2 w-full sm:w-auto justify-end border-t sm:border-t-0 pt-2 sm:pt-0 border-zinc-100">
+          <ArrowUpDown size={13} className="text-zinc-400" />
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
-            className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 font-medium"
+            className="bg-zinc-50 border border-zinc-200 rounded-md px-2.5 py-1 text-xs text-zinc-700 focus:outline-none"
           >
-            <option value="name">Sort by Name</option>
-            <option value="email">Sort by Email</option>
-            <option value="address">Sort by Address</option>
+            <option value="name">Name</option>
+            <option value="email">Email</option>
+            <option value="address">Address</option>
           </select>
           <button
             onClick={() => setSortOrder((prev) => (prev === 'ASC' ? 'DESC' : 'ASC'))}
-            className="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-100 transition-colors"
+            className="px-2 py-1 bg-zinc-50 border border-zinc-200 rounded-md text-xs font-medium text-zinc-700 hover:bg-zinc-100 transition-colors"
           >
             {sortOrder}
           </button>
         </div>
       </div>
 
-      {/* Stores Grid */}
+      {/* Stores List */}
       {loading && stores.length === 0 ? (
-        <div className="py-20 text-center text-slate-400">
-          <div className="animate-spin w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full mx-auto mb-3" />
-          <p className="text-sm font-medium">Finding stores...</p>
+        <div className="py-16 text-center text-zinc-400">
+          <div className="animate-spin w-5 h-5 border-2 border-zinc-900 border-t-transparent rounded-full mx-auto mb-2" />
+          <p className="text-xs">Loading stores...</p>
         </div>
       ) : stores.length === 0 ? (
-        <div className="p-12 text-center bg-white rounded-3xl border border-slate-200 shadow-sm max-w-md mx-auto">
-          <Store size={36} className="mx-auto text-slate-300 mb-3" />
-          <h3 className="text-base font-bold text-slate-800">No stores found</h3>
-          <p className="text-xs text-slate-500 mt-1">
-            Try adjusting your search query or check back later.
-          </p>
+        <div className="py-16 text-center bg-white rounded-xl border border-zinc-200">
+          <Store size={28} className="mx-auto text-zinc-300 mb-2" />
+          <h3 className="text-sm font-medium text-zinc-800">No stores found</h3>
+          <p className="text-xs text-zinc-400 mt-0.5">Try a different search query.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {stores.map((s) => {
             const overallScore = parseFloat(s.overall_rating || 0);
             const userRating = s.user_submitted_rating ? parseFloat(s.user_submitted_rating) : 0;
@@ -167,30 +155,30 @@ export const UserDashboard = () => {
             return (
               <div
                 key={s.id}
-                className="bg-white rounded-3xl border border-slate-200/90 shadow-sm hover:shadow-md transition-all p-6 flex flex-col justify-between"
+                className="bg-white rounded-xl border border-zinc-200 p-5 flex flex-col justify-between hover:border-zinc-300 transition-colors"
               >
                 <div>
-                  {/* Top: Name & Overall Rating Badge */}
-                  <div className="flex items-start justify-between gap-3 mb-3">
-                    <h3 className="text-lg font-bold text-slate-900 leading-snug line-clamp-1" title={s.name}>
+                  {/* Top */}
+                  <div className="flex items-start justify-between gap-2 mb-2">
+                    <h3 className="text-sm font-semibold text-zinc-900 line-clamp-1" title={s.name}>
                       {s.name}
                     </h3>
-                    <div className="shrink-0 flex items-center gap-1 px-2.5 py-1 bg-amber-50 border border-amber-200 rounded-xl text-xs font-bold text-amber-900">
-                      <Star size={13} className="fill-amber-400 text-amber-500" />
+                    <div className="shrink-0 flex items-center gap-1 px-1.5 py-0.5 bg-zinc-50 border border-zinc-200 rounded text-xs font-semibold text-zinc-800">
+                      <Star size={12} className="fill-amber-400 text-amber-500" />
                       <span>{overallScore.toFixed(1)}</span>
                     </div>
                   </div>
 
                   {/* Metadata */}
-                  <div className="space-y-2 text-xs text-slate-500 mb-6">
-                    <div className="flex items-start gap-2">
-                      <MapPin size={14} className="text-slate-400 shrink-0 mt-0.5" />
+                  <div className="space-y-1.5 text-xs text-zinc-500 mb-5">
+                    <div className="flex items-start gap-1.5">
+                      <MapPin size={13} className="text-zinc-400 shrink-0 mt-0.5" />
                       <span className="line-clamp-2" title={s.address}>
                         {s.address}
                       </span>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <Mail size={14} className="text-slate-400 shrink-0" />
+                    <div className="flex items-center gap-1.5">
+                      <Mail size={13} className="text-zinc-400 shrink-0" />
                       <span className="truncate" title={s.email}>
                         {s.email}
                       </span>
@@ -198,33 +186,23 @@ export const UserDashboard = () => {
                   </div>
                 </div>
 
-                {/* Rating Interactive Section */}
-                <div className="pt-4 border-t border-slate-100 bg-slate-50/50 -mx-6 -mb-6 p-6 rounded-b-3xl">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-xs font-semibold text-slate-600 uppercase tracking-wider">
-                      Your Rating:
+                {/* Rating Interactive Bar */}
+                <div className="pt-3 border-t border-zinc-100 flex items-center justify-between">
+                  <div>
+                    <span className="text-[11px] font-medium text-zinc-400 block mb-0.5">
+                      {userRating > 0 ? `Your rating: ${userRating}★` : 'Rate this store'}
                     </span>
-                    {userRating > 0 ? (
-                      <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-                        {userRating} / 5 Stars
-                      </span>
-                    ) : (
-                      <span className="text-xs text-slate-400">Not rated yet</span>
-                    )}
-                  </div>
-
-                  <div className="flex items-center justify-between">
                     <StarRating
                       rating={userRating}
                       interactive={true}
-                      size={24}
+                      size={18}
                       disabled={isSubmitting}
                       onChange={(star) => handleRateStore(s.id, star)}
                     />
-                    <span className="text-xs text-slate-400 italic">
-                      {isSubmitting ? 'Saving...' : userRating > 0 ? 'Click to change' : 'Click to rate'}
-                    </span>
                   </div>
+                  {isSubmitting && (
+                    <span className="text-[11px] text-zinc-400">Saving...</span>
+                  )}
                 </div>
               </div>
             );

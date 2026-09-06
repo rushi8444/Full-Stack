@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ratingsApi, usersApi, storesApi, getErrorMessage } from '../api/client';
-import { Users, Store, Star, Plus, Search, Filter, ArrowUpDown, ShieldCheck, ShoppingBag, UserCheck, AlertCircle, CheckCircle2, Eye, EyeOff } from 'lucide-react';
+import { Plus, Search, Filter, ArrowUpDown, Star, AlertCircle, Check, Eye, EyeOff } from 'lucide-react';
 import Modal from '../components/Modal';
 import StarRating from '../components/StarRating';
 
@@ -144,9 +144,9 @@ export const AdminDashboard = () => {
     setFormLoading(true);
 
     try {
-      const res = await usersApi.createUser(newUserData);
+      await usersApi.createUser(newUserData);
       setFormLoading(false);
-      setFormSuccess('User account successfully created!');
+      setFormSuccess('User successfully created.');
       loadMetrics();
       loadUsers();
       loadStoreOwners();
@@ -160,7 +160,7 @@ export const AdminDashboard = () => {
           address: '',
           role: 'Normal User',
         });
-      }, 1200);
+      }, 1000);
     } catch (err) {
       setFormLoading(false);
       setFormError(getErrorMessage(err));
@@ -177,7 +177,7 @@ export const AdminDashboard = () => {
     try {
       await storesApi.createStore(newStoreData, 'System Administrator');
       setFormLoading(false);
-      setFormSuccess('Store created and assigned successfully!');
+      setFormSuccess('Store created and assigned.');
       loadMetrics();
       loadStores();
       setTimeout(() => {
@@ -189,14 +189,13 @@ export const AdminDashboard = () => {
           address: '',
           ownerId: storeOwners[0]?.id || '',
         });
-      }, 1200);
+      }, 1000);
     } catch (err) {
       setFormLoading(false);
       setFormError(getErrorMessage(err));
     }
   };
 
-  // Open add store modal helper
   const openAddStoreModal = () => {
     loadStoreOwners();
     setFormError('');
@@ -208,177 +207,155 @@ export const AdminDashboard = () => {
     switch (role) {
       case 'System Administrator':
         return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-purple-50 text-purple-700 border border-purple-200">
-            <ShieldCheck size={12} />
+          <span className="inline-flex items-center px-2 py-0.5 rounded border border-zinc-300 bg-zinc-100 text-zinc-800 text-[11px] font-medium">
             Admin
           </span>
         );
       case 'Store Owner':
         return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-700 border border-amber-200">
-            <ShoppingBag size={12} />
-            Store Owner
+          <span className="inline-flex items-center px-2 py-0.5 rounded border border-zinc-200 bg-zinc-50 text-zinc-700 text-[11px] font-medium">
+            Owner
           </span>
         );
       default:
         return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
-            <UserCheck size={12} />
-            Normal User
+          <span className="inline-flex items-center px-2 py-0.5 rounded border border-zinc-200 bg-white text-zinc-500 text-[11px] font-medium">
+            User
           </span>
         );
     }
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-      {/* Title & Page Overview */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+      {/* Title & Actions */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
-            System Administration
-          </h1>
-          <p className="text-sm text-slate-500">
-            System metrics, platform user accounts, and registered stores directory.
-          </p>
+          <h1 className="text-lg font-semibold text-zinc-900 tracking-tight">Administration</h1>
+          <p className="text-xs text-zinc-500">Platform users, stores, and system records.</p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <button
             onClick={() => {
               setFormError('');
               setFormSuccess('');
               setIsAddUserOpen(true);
             }}
-            className="flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-xl shadow-sm shadow-indigo-200 transition-all"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-medium rounded-lg transition-colors"
           >
-            <Plus size={16} />
+            <Plus size={14} />
             <span>Add User</span>
           </button>
           <button
             onClick={openAddStoreModal}
-            className="flex items-center gap-2 px-4 py-2.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-sm font-semibold rounded-xl shadow-sm transition-all"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-zinc-50 text-zinc-800 border border-zinc-200 text-xs font-medium rounded-lg transition-colors"
           >
-            <Plus size={16} />
+            <Plus size={14} />
             <span>Add Store</span>
           </button>
         </div>
       </div>
 
-      {/* KPI Metric Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-        <div className="p-6 bg-white rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">Total Users</p>
-            <p className="text-3xl font-extrabold text-slate-900 mt-1">
-              {loadingMetrics ? '...' : metrics.totalUsers}
-            </p>
-          </div>
-          <div className="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center">
-            <Users size={24} />
-          </div>
+      {/* Clean Metric Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+        <div className="p-4 bg-white rounded-xl border border-zinc-200">
+          <span className="text-[11px] font-medium uppercase tracking-wider text-zinc-400 block">
+            Total Users
+          </span>
+          <p className="text-2xl font-semibold text-zinc-900 tracking-tight mt-1">
+            {loadingMetrics ? '—' : metrics.totalUsers}
+          </p>
         </div>
 
-        <div className="p-6 bg-white rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">Total Stores</p>
-            <p className="text-3xl font-extrabold text-slate-900 mt-1">
-              {loadingMetrics ? '...' : metrics.totalStores}
-            </p>
-          </div>
-          <div className="w-12 h-12 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
-            <Store size={24} />
-          </div>
+        <div className="p-4 bg-white rounded-xl border border-zinc-200">
+          <span className="text-[11px] font-medium uppercase tracking-wider text-zinc-400 block">
+            Total Stores
+          </span>
+          <p className="text-2xl font-semibold text-zinc-900 tracking-tight mt-1">
+            {loadingMetrics ? '—' : metrics.totalStores}
+          </p>
         </div>
 
-        <div className="p-6 bg-white rounded-2xl border border-slate-200/80 shadow-sm flex items-center justify-between">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">Total Ratings</p>
-            <p className="text-3xl font-extrabold text-slate-900 mt-1">
-              {loadingMetrics ? '...' : metrics.totalRatings}
-            </p>
-          </div>
-          <div className="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center">
-            <Star size={24} className="fill-amber-400" />
-          </div>
+        <div className="p-4 bg-white rounded-xl border border-zinc-200">
+          <span className="text-[11px] font-medium uppercase tracking-wider text-zinc-400 block">
+            Total Ratings
+          </span>
+          <p className="text-2xl font-semibold text-zinc-900 tracking-tight mt-1">
+            {loadingMetrics ? '—' : metrics.totalRatings}
+          </p>
         </div>
       </div>
 
-      {/* Navigation Tabs */}
-      <div className="border-b border-slate-200">
-        <nav className="flex space-x-8">
-          <button
-            onClick={() => setActiveTab('users')}
-            className={`pb-4 text-sm font-semibold border-b-2 transition-colors ${
-              activeTab === 'users'
-                ? 'border-indigo-600 text-indigo-600'
-                : 'border-transparent text-slate-500 hover:text-slate-800'
-            }`}
-          >
-            Users Directory ({metrics.totalUsers})
-          </button>
-          <button
-            onClick={() => setActiveTab('stores')}
-            className={`pb-4 text-sm font-semibold border-b-2 transition-colors ${
-              activeTab === 'stores'
-                ? 'border-indigo-600 text-indigo-600'
-                : 'border-transparent text-slate-500 hover:text-slate-800'
-            }`}
-          >
-            Stores Directory ({metrics.totalStores})
-          </button>
-        </nav>
+      {/* Tabs */}
+      <div className="flex border-b border-zinc-200 gap-6">
+        <button
+          onClick={() => setActiveTab('users')}
+          className={`pb-2 text-xs font-medium border-b-2 transition-colors ${
+            activeTab === 'users'
+              ? 'border-zinc-900 text-zinc-900'
+              : 'border-transparent text-zinc-400 hover:text-zinc-700'
+          }`}
+        >
+          Users ({metrics.totalUsers})
+        </button>
+        <button
+          onClick={() => setActiveTab('stores')}
+          className={`pb-2 text-xs font-medium border-b-2 transition-colors ${
+            activeTab === 'stores'
+              ? 'border-zinc-900 text-zinc-900'
+              : 'border-transparent text-zinc-400 hover:text-zinc-700'
+          }`}
+        >
+          Stores ({metrics.totalStores})
+        </button>
       </div>
 
       {/* Tab 1: Users Directory */}
       {activeTab === 'users' && (
-        <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
-          {/* Controls Bar */}
-          <div className="p-4 border-b border-slate-200 bg-slate-50/50 flex flex-col md:flex-row md:items-center justify-between gap-4">
-            {/* Search */}
-            <div className="relative flex-1 max-w-md">
-              <Search size={16} className="absolute left-3.5 top-3 text-slate-400" />
+        <div className="bg-white rounded-xl border border-zinc-200 overflow-hidden">
+          {/* Controls */}
+          <div className="p-3 border-b border-zinc-100 flex flex-col md:flex-row md:items-center justify-between gap-3">
+            <div className="relative flex-1 max-w-sm">
+              <Search size={14} className="absolute left-3 top-2.5 text-zinc-400" />
               <input
                 type="text"
                 value={userSearch}
                 onChange={(e) => setUserSearch(e.target.value)}
-                placeholder="Search by name, email, or address..."
-                className="w-full pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors"
+                placeholder="Search users..."
+                className="w-full pl-8 pr-3 py-1.5 text-xs bg-zinc-50 border border-zinc-200 rounded-md focus:outline-none focus:border-zinc-900"
               />
             </div>
 
-            {/* Filter & Sort Controls */}
-            <div className="flex flex-wrap items-center gap-3">
-              {/* Role filter */}
-              <div className="flex items-center gap-2 text-sm text-slate-600">
-                <Filter size={15} className="text-slate-400" />
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="flex items-center gap-1.5 text-xs text-zinc-500">
+                <Filter size={13} className="text-zinc-400" />
                 <select
                   value={roleFilter}
                   onChange={(e) => setRoleFilter(e.target.value)}
-                  className="bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                  className="bg-zinc-50 border border-zinc-200 rounded-md px-2 py-1 text-xs text-zinc-700 focus:outline-none"
                 >
                   <option value="">All Roles</option>
                   <option value="Normal User">Normal User</option>
                   <option value="Store Owner">Store Owner</option>
-                  <option value="System Administrator">System Administrator</option>
+                  <option value="System Administrator">Admin</option>
                 </select>
               </div>
 
-              {/* Sort selector */}
-              <div className="flex items-center gap-2 text-sm text-slate-600">
-                <ArrowUpDown size={15} className="text-slate-400" />
+              <div className="flex items-center gap-1.5 text-xs text-zinc-500">
+                <ArrowUpDown size={13} className="text-zinc-400" />
                 <select
                   value={userSortBy}
                   onChange={(e) => setUserSortBy(e.target.value)}
-                  className="bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                  className="bg-zinc-50 border border-zinc-200 rounded-md px-2 py-1 text-xs text-zinc-700 focus:outline-none"
                 >
                   <option value="name">Name</option>
                   <option value="email">Email</option>
                   <option value="role">Role</option>
-                  <option value="created_at">Date Created</option>
+                  <option value="created_at">Date</option>
                 </select>
                 <button
                   onClick={() => setUserSortOrder((prev) => (prev === 'ASC' ? 'DESC' : 'ASC'))}
-                  className="px-2.5 py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100"
+                  className="px-2 py-1 bg-zinc-50 border border-zinc-200 rounded-md text-xs font-medium text-zinc-700 hover:bg-zinc-100"
                 >
                   {userSortOrder}
                 </button>
@@ -386,54 +363,52 @@ export const AdminDashboard = () => {
             </div>
           </div>
 
-          {/* Table */}
+          {/* Users Table */}
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse text-sm">
+            <table className="w-full text-left border-collapse text-xs">
               <thead>
-                <tr className="border-b border-slate-200 bg-slate-50/70 text-slate-500 text-xs uppercase tracking-wider font-semibold">
-                  <th className="py-3 px-6">User</th>
-                  <th className="py-3 px-6">Email</th>
-                  <th className="py-3 px-6">Role</th>
-                  <th className="py-3 px-6">Address</th>
-                  <th className="py-3 px-6 text-right">Store Rating (If Owner)</th>
+                <tr className="border-b border-zinc-100 bg-zinc-50/60 text-zinc-500 font-medium">
+                  <th className="py-2.5 px-4">Name</th>
+                  <th className="py-2.5 px-4">Email</th>
+                  <th className="py-2.5 px-4">Role</th>
+                  <th className="py-2.5 px-4">Address</th>
+                  <th className="py-2.5 px-4 text-right">Store Rating</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 text-slate-700">
+              <tbody className="divide-y divide-zinc-100 text-zinc-700">
                 {loadingUsers ? (
                   <tr>
-                    <td colSpan={5} className="text-center py-12 text-slate-400">
+                    <td colSpan={5} className="text-center py-10 text-zinc-400">
                       Loading users...
                     </td>
                   </tr>
                 ) : usersList.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="text-center py-12 text-slate-400">
-                      No users found matching your search.
+                    <td colSpan={5} className="text-center py-10 text-zinc-400">
+                      No users found.
                     </td>
                   </tr>
                 ) : (
                   usersList.map((u) => (
-                    <tr key={u.id} className="hover:bg-slate-50/80 transition-colors">
-                      <td className="py-4 px-6">
-                        <div className="font-semibold text-slate-900">{u.name}</div>
-                      </td>
-                      <td className="py-4 px-6">{u.email}</td>
-                      <td className="py-4 px-6">{getRolePill(u.role)}</td>
-                      <td className="py-4 px-6 max-w-xs truncate" title={u.address}>
+                    <tr key={u.id} className="hover:bg-zinc-50/50 transition-colors">
+                      <td className="py-3 px-4 font-medium text-zinc-900">{u.name}</td>
+                      <td className="py-3 px-4 text-zinc-500">{u.email}</td>
+                      <td className="py-3 px-4">{getRolePill(u.role)}</td>
+                      <td className="py-3 px-4 text-zinc-500 max-w-xs truncate" title={u.address}>
                         {u.address}
                       </td>
-                      <td className="py-4 px-6 text-right">
+                      <td className="py-3 px-4 text-right">
                         {u.role === 'Store Owner' ? (
                           u.rating ? (
-                            <div className="inline-flex items-center gap-1 text-slate-800 font-medium">
-                              <Star size={14} className="fill-amber-400 text-amber-500" />
+                            <div className="inline-flex items-center gap-1 text-zinc-800 font-medium">
+                              <Star size={12} className="fill-amber-400 text-amber-500" />
                               <span>{parseFloat(u.rating).toFixed(1)}</span>
                             </div>
                           ) : (
-                            <span className="text-slate-400 text-xs">No ratings yet</span>
+                            <span className="text-zinc-400 text-[11px]">Unrated</span>
                           )
                         ) : (
-                          <span className="text-slate-300 text-xs">—</span>
+                          <span className="text-zinc-300">—</span>
                         )}
                       </td>
                     </tr>
@@ -447,80 +422,76 @@ export const AdminDashboard = () => {
 
       {/* Tab 2: Stores Directory */}
       {activeTab === 'stores' && (
-        <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
-          {/* Controls Bar */}
-          <div className="p-4 border-b border-slate-200 bg-slate-50/50 flex flex-col md:flex-row md:items-center justify-between gap-4">
-            {/* Search */}
-            <div className="relative flex-1 max-w-md">
-              <Search size={16} className="absolute left-3.5 top-3 text-slate-400" />
+        <div className="bg-white rounded-xl border border-zinc-200 overflow-hidden">
+          {/* Controls */}
+          <div className="p-3 border-b border-zinc-100 flex flex-col md:flex-row md:items-center justify-between gap-3">
+            <div className="relative flex-1 max-w-sm">
+              <Search size={14} className="absolute left-3 top-2.5 text-zinc-400" />
               <input
                 type="text"
                 value={storeSearch}
                 onChange={(e) => setStoreSearch(e.target.value)}
-                placeholder="Search stores by name or address..."
-                className="w-full pl-9 pr-4 py-2 bg-white border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors"
+                placeholder="Search stores..."
+                className="w-full pl-8 pr-3 py-1.5 text-xs bg-zinc-50 border border-zinc-200 rounded-md focus:outline-none focus:border-zinc-900"
               />
             </div>
 
-            {/* Sort selector */}
-            <div className="flex items-center gap-2 text-sm text-slate-600">
-              <ArrowUpDown size={15} className="text-slate-400" />
+            <div className="flex items-center gap-1.5 text-xs text-zinc-500">
+              <ArrowUpDown size={13} className="text-zinc-400" />
               <select
                 value={storeSortBy}
                 onChange={(e) => setStoreSortBy(e.target.value)}
-                className="bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                className="bg-zinc-50 border border-zinc-200 rounded-md px-2 py-1 text-xs text-zinc-700 focus:outline-none"
               >
-                <option value="name">Store Name</option>
+                <option value="name">Name</option>
                 <option value="email">Email</option>
                 <option value="address">Address</option>
               </select>
               <button
                 onClick={() => setStoreSortOrder((prev) => (prev === 'ASC' ? 'DESC' : 'ASC'))}
-                className="px-2.5 py-2 bg-white border border-slate-200 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100"
+                className="px-2 py-1 bg-zinc-50 border border-zinc-200 rounded-md text-xs font-medium text-zinc-700 hover:bg-zinc-100"
               >
                 {storeSortOrder}
               </button>
             </div>
           </div>
 
-          {/* Table */}
+          {/* Stores Table */}
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse text-sm">
+            <table className="w-full text-left border-collapse text-xs">
               <thead>
-                <tr className="border-b border-slate-200 bg-slate-50/70 text-slate-500 text-xs uppercase tracking-wider font-semibold">
-                  <th className="py-3 px-6">Store Name</th>
-                  <th className="py-3 px-6">Contact Email</th>
-                  <th className="py-3 px-6">Address</th>
-                  <th className="py-3 px-6 text-right">Average Rating</th>
+                <tr className="border-b border-zinc-100 bg-zinc-50/60 text-zinc-500 font-medium">
+                  <th className="py-2.5 px-4">Store Name</th>
+                  <th className="py-2.5 px-4">Email</th>
+                  <th className="py-2.5 px-4">Address</th>
+                  <th className="py-2.5 px-4 text-right">Rating</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 text-slate-700">
+              <tbody className="divide-y divide-zinc-100 text-zinc-700">
                 {loadingStores ? (
                   <tr>
-                    <td colSpan={4} className="text-center py-12 text-slate-400">
+                    <td colSpan={4} className="text-center py-10 text-zinc-400">
                       Loading stores...
                     </td>
                   </tr>
                 ) : storesList.length === 0 ? (
                   <tr>
-                    <td colSpan={4} className="text-center py-12 text-slate-400">
-                      No stores found matching your search.
+                    <td colSpan={4} className="text-center py-10 text-zinc-400">
+                      No stores found.
                     </td>
                   </tr>
                 ) : (
                   storesList.map((s) => (
-                    <tr key={s.id} className="hover:bg-slate-50/80 transition-colors">
-                      <td className="py-4 px-6">
-                        <div className="font-semibold text-slate-900">{s.name}</div>
-                      </td>
-                      <td className="py-4 px-6">{s.email}</td>
-                      <td className="py-4 px-6 max-w-sm truncate" title={s.address}>
+                    <tr key={s.id} className="hover:bg-zinc-50/50 transition-colors">
+                      <td className="py-3 px-4 font-medium text-zinc-900">{s.name}</td>
+                      <td className="py-3 px-4 text-zinc-500">{s.email}</td>
+                      <td className="py-3 px-4 text-zinc-500 max-w-sm truncate" title={s.address}>
                         {s.address}
                       </td>
-                      <td className="py-4 px-6 text-right">
-                        <div className="inline-flex items-center gap-1.5 font-bold text-slate-900">
-                          <StarRating rating={parseFloat(s.overall_rating || 0)} size={16} />
-                          <span className="ml-1 text-sm">{parseFloat(s.overall_rating || 0).toFixed(1)}</span>
+                      <td className="py-3 px-4 text-right">
+                        <div className="inline-flex items-center gap-1 font-medium text-zinc-900">
+                          <StarRating rating={parseFloat(s.overall_rating || 0)} size={14} />
+                          <span className="ml-1 text-xs">{parseFloat(s.overall_rating || 0).toFixed(1)}</span>
                         </div>
                       </td>
                     </tr>
@@ -536,92 +507,81 @@ export const AdminDashboard = () => {
       <Modal
         isOpen={isAddUserOpen}
         onClose={() => setIsAddUserOpen(false)}
-        title="Add New Platform User"
-        maxWidth="max-w-lg"
+        title="Add User"
+        maxWidth="max-w-md"
       >
-        <form onSubmit={handleCreateUser} className="space-y-4">
+        <form onSubmit={handleCreateUser} className="space-y-3.5">
           {formError && (
-            <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-sm text-rose-700 flex items-start gap-2">
-              <AlertCircle size={16} className="shrink-0 mt-0.5" />
+            <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-xs text-red-700 flex items-start gap-2">
+              <AlertCircle size={15} className="shrink-0 mt-0.5" />
               <span>{formError}</span>
             </div>
           )}
           {formSuccess && (
-            <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-sm text-emerald-700 flex items-start gap-2">
-              <CheckCircle2 size={16} className="shrink-0 mt-0.5" />
+            <div className="p-3 bg-zinc-100 border border-zinc-200 rounded-lg text-xs text-zinc-900">
               <span>{formSuccess}</span>
             </div>
           )}
 
           <div>
             <div className="flex justify-between items-center mb-1">
-              <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider">
-                Full Name
-              </label>
-              <span className="text-xs text-slate-400">10-60 characters</span>
+              <label className="block text-xs font-medium text-zinc-700">Full Name</label>
+              <span className="text-[11px] text-zinc-400">10-60 chars</span>
             </div>
             <input
               type="text"
               value={newUserData.name}
               onChange={(e) => setNewUserData({ ...newUserData, name: e.target.value })}
               required
-              placeholder="e.g. Eleanor Vance Wright"
-              className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+              placeholder="Full name..."
+              className="w-full px-3 py-2 bg-white border border-zinc-200 rounded-lg text-xs text-zinc-900 focus:outline-none focus:border-zinc-900"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
-              Email Address
-            </label>
+            <label className="block text-xs font-medium text-zinc-700 mb-1">Email Address</label>
             <input
               type="email"
               value={newUserData.email}
               onChange={(e) => setNewUserData({ ...newUserData, email: e.target.value })}
               required
               placeholder="user@example.com"
-              className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+              className="w-full px-3 py-2 bg-white border border-zinc-200 rounded-lg text-xs text-zinc-900 focus:outline-none focus:border-zinc-900"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
-              Role
-            </label>
+            <label className="block text-xs font-medium text-zinc-700 mb-1">Role</label>
             <select
               value={newUserData.role}
               onChange={(e) => setNewUserData({ ...newUserData, role: e.target.value })}
-              className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 font-medium"
+              className="w-full px-3 py-2 bg-white border border-zinc-200 rounded-lg text-xs text-zinc-900 focus:outline-none focus:border-zinc-900"
             >
               <option value="Normal User">Normal User</option>
               <option value="Store Owner">Store Owner</option>
-              <option value="System Administrator">System Administrator</option>
+              <option value="System Administrator">Admin</option>
             </select>
           </div>
 
           <div>
             <div className="flex justify-between items-center mb-1">
-              <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider">
-                Address
-              </label>
-              <span className="text-xs text-slate-400">max 400 characters</span>
+              <label className="block text-xs font-medium text-zinc-700">Address</label>
+              <span className="text-[11px] text-zinc-400">max 400 chars</span>
             </div>
             <textarea
               rows={2}
               value={newUserData.address}
               onChange={(e) => setNewUserData({ ...newUserData, address: e.target.value })}
               required
-              placeholder="Full physical address..."
-              className="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 resize-none"
+              placeholder="Physical address..."
+              className="w-full px-3 py-2 bg-white border border-zinc-200 rounded-lg text-xs text-zinc-900 focus:outline-none focus:border-zinc-900 resize-none"
             />
           </div>
 
           <div>
             <div className="flex justify-between items-center mb-1">
-              <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider">
-                Password
-              </label>
-              <span className="text-xs text-slate-400">8-16 chars, 1 upper, 1 special</span>
+              <label className="block text-xs font-medium text-zinc-700">Password</label>
+              <span className="text-[11px] text-zinc-400">8-16 chars, 1 upper, 1 special</span>
             </div>
             <div className="relative">
               <input
@@ -629,35 +589,34 @@ export const AdminDashboard = () => {
                 value={newUserData.password}
                 onChange={(e) => setNewUserData({ ...newUserData, password: e.target.value })}
                 required
-                placeholder="SecurePass@123"
-                className="w-full pl-3.5 pr-10 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                placeholder="••••••••"
+                className="w-full pl-3 pr-9 py-2 bg-white border border-zinc-200 rounded-lg text-xs text-zinc-900 focus:outline-none focus:border-zinc-900"
               />
               <button
                 type="button"
                 onClick={() => setShowUserPassword(!showUserPassword)}
-                className="absolute right-3.5 top-3 text-slate-400 hover:text-slate-600 focus:outline-none transition-colors"
-                title={showUserPassword ? 'Hide password' : 'Show password'}
-                aria-label={showUserPassword ? 'Hide password' : 'Show password'}
+                className="absolute right-2.5 top-2.5 text-zinc-400 hover:text-zinc-700"
+                tabIndex={-1}
               >
-                {showUserPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                {showUserPassword ? <EyeOff size={14} /> : <Eye size={14} />}
               </button>
             </div>
           </div>
 
-          <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
+          <div className="flex justify-end gap-2 pt-2 border-t border-zinc-100">
             <button
               type="button"
               onClick={() => setIsAddUserOpen(false)}
-              className="px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-xl"
+              className="px-3.5 py-1.5 text-xs font-medium text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 rounded-md transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={formLoading}
-              className="px-5 py-2.5 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 rounded-xl shadow-sm"
+              className="px-4 py-1.5 text-xs font-medium text-white bg-zinc-900 hover:bg-zinc-800 disabled:opacity-40 rounded-md transition-colors"
             >
-              {formLoading ? 'Creating...' : 'Create Account'}
+              {formLoading ? 'Creating...' : 'Create User'}
             </button>
           </div>
         </form>
@@ -667,65 +626,58 @@ export const AdminDashboard = () => {
       <Modal
         isOpen={isAddStoreOpen}
         onClose={() => setIsAddStoreOpen(false)}
-        title="Register New Store"
-        maxWidth="max-w-lg"
+        title="Register Store"
+        maxWidth="max-w-md"
       >
-        <form onSubmit={handleCreateStore} className="space-y-4">
+        <form onSubmit={handleCreateStore} className="space-y-3.5">
           {formError && (
-            <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-sm text-rose-700 flex items-start gap-2">
-              <AlertCircle size={16} className="shrink-0 mt-0.5" />
+            <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-xs text-red-700 flex items-start gap-2">
+              <AlertCircle size={15} className="shrink-0 mt-0.5" />
               <span>{formError}</span>
             </div>
           )}
           {formSuccess && (
-            <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-sm text-emerald-700 flex items-start gap-2">
-              <CheckCircle2 size={16} className="shrink-0 mt-0.5" />
+            <div className="p-3 bg-zinc-100 border border-zinc-200 rounded-lg text-xs text-zinc-900">
               <span>{formSuccess}</span>
             </div>
           )}
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
-              Store Name
-            </label>
+            <label className="block text-xs font-medium text-zinc-700 mb-1">Store Name</label>
             <input
               type="text"
               value={newStoreData.name}
               onChange={(e) => setNewStoreData({ ...newStoreData, name: e.target.value })}
               required
-              placeholder="e.g. Apex Hardware & Tools"
-              className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+              placeholder="Store name..."
+              className="w-full px-3 py-2 bg-white border border-zinc-200 rounded-lg text-xs text-zinc-900 focus:outline-none focus:border-zinc-900"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
-              Store Email
-            </label>
+            <label className="block text-xs font-medium text-zinc-700 mb-1">Store Email</label>
             <input
               type="email"
               value={newStoreData.email}
               onChange={(e) => setNewStoreData({ ...newStoreData, email: e.target.value })}
               required
-              placeholder="contact@store.com"
-              className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+              placeholder="store@example.com"
+              className="w-full px-3 py-2 bg-white border border-zinc-200 rounded-lg text-xs text-zinc-900 focus:outline-none focus:border-zinc-900"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
-              Assign Store Owner
-            </label>
+            <label className="block text-xs font-medium text-zinc-700 mb-1">Assign Store Owner</label>
             {storeOwners.length === 0 ? (
-              <p className="text-xs text-amber-600 bg-amber-50 p-2 rounded-lg border border-amber-200">
-                No Store Owners available. Please add a user with role "Store Owner" first.
+              <p className="text-xs text-zinc-500 bg-zinc-50 p-2 rounded-lg border border-zinc-200">
+                No Store Owners available. Add a Store Owner account first.
               </p>
             ) : (
               <select
                 value={newStoreData.ownerId}
                 onChange={(e) => setNewStoreData({ ...newStoreData, ownerId: e.target.value })}
                 required
-                className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                className="w-full px-3 py-2 bg-white border border-zinc-200 rounded-lg text-xs text-zinc-900 focus:outline-none focus:border-zinc-900"
               >
                 {storeOwners.map((owner) => (
                   <option key={owner.id} value={owner.id}>
@@ -737,31 +689,29 @@ export const AdminDashboard = () => {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
-              Store Address
-            </label>
+            <label className="block text-xs font-medium text-zinc-700 mb-1">Store Address</label>
             <textarea
               rows={2}
               value={newStoreData.address}
               onChange={(e) => setNewStoreData({ ...newStoreData, address: e.target.value })}
               required
-              placeholder="Physical store address..."
-              className="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 resize-none"
+              placeholder="Physical address..."
+              className="w-full px-3 py-2 bg-white border border-zinc-200 rounded-lg text-xs text-zinc-900 focus:outline-none focus:border-zinc-900 resize-none"
             />
           </div>
 
-          <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
+          <div className="flex justify-end gap-2 pt-2 border-t border-zinc-100">
             <button
               type="button"
               onClick={() => setIsAddStoreOpen(false)}
-              className="px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-xl"
+              className="px-3.5 py-1.5 text-xs font-medium text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 rounded-md transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={formLoading || storeOwners.length === 0}
-              className="px-5 py-2.5 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 rounded-xl shadow-sm"
+              className="px-4 py-1.5 text-xs font-medium text-white bg-zinc-900 hover:bg-zinc-800 disabled:opacity-40 rounded-md transition-colors"
             >
               {formLoading ? 'Saving...' : 'Register Store'}
             </button>

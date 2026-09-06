@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Modal from './Modal';
 import { useAuth } from '../context/AuthContext';
-import { Lock, CheckCircle2, XCircle, AlertCircle, Eye, EyeOff } from 'lucide-react';
+import { Lock, Check, X, AlertCircle, Eye, EyeOff } from 'lucide-react';
 
 export const ChangePasswordModal = ({ isOpen, onClose }) => {
   const { changePassword } = useAuth();
@@ -34,14 +34,14 @@ export const ChangePasswordModal = ({ isOpen, onClose }) => {
     setLoading(false);
 
     if (result.success) {
-      setSuccess(result.message || 'Password changed successfully!');
+      setSuccess(result.message || 'Password changed successfully.');
       setTimeout(() => {
         setSuccess('');
         setCurrentPassword('');
         setNewPassword('');
         setConfirmPassword('');
         onClose();
-      }, 1500);
+      }, 1200);
     } else {
       setError(result.error);
     }
@@ -51,21 +51,21 @@ export const ChangePasswordModal = ({ isOpen, onClose }) => {
     <Modal isOpen={isOpen} onClose={onClose} title="Change Password" maxWidth="max-w-md">
       <form onSubmit={handleSubmit} className="space-y-4">
         {error && (
-          <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl flex items-start gap-2.5 text-sm text-rose-700">
-            <AlertCircle size={18} className="shrink-0 mt-0.5 text-rose-500" />
+          <div className="p-3 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2 text-xs text-red-700">
+            <AlertCircle size={15} className="shrink-0 mt-0.5" />
             <span>{error}</span>
           </div>
         )}
 
         {success && (
-          <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl flex items-start gap-2.5 text-sm text-emerald-700">
-            <CheckCircle2 size={18} className="shrink-0 mt-0.5 text-emerald-500" />
+          <div className="p-3 bg-zinc-100 border border-zinc-200 rounded-lg flex items-start gap-2 text-xs text-zinc-900">
+            <Check size={15} className="shrink-0 mt-0.5 text-zinc-800" />
             <span>{success}</span>
           </div>
         )}
 
         <div>
-          <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
+          <label className="block text-xs font-medium text-zinc-700 mb-1">
             Current Password
           </label>
           <div className="relative">
@@ -74,24 +74,23 @@ export const ChangePasswordModal = ({ isOpen, onClose }) => {
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
               required
-              className="w-full pl-10 pr-10 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors"
-              placeholder="Enter current password"
+              className="w-full pl-9 pr-9 py-2 bg-white border border-zinc-200 rounded-lg text-zinc-900 text-sm focus:outline-none focus:border-zinc-900 transition-colors"
+              placeholder="••••••••"
             />
-            <Lock size={16} className="absolute left-3.5 top-3.5 text-slate-400" />
+            <Lock size={15} className="absolute left-3 top-2.5 text-zinc-400" />
             <button
               type="button"
               onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-              className="absolute right-3.5 top-3 text-slate-400 hover:text-slate-600 focus:outline-none transition-colors"
-              title={showCurrentPassword ? 'Hide password' : 'Show password'}
-              aria-label={showCurrentPassword ? 'Hide password' : 'Show password'}
+              className="absolute right-2.5 top-2.5 text-zinc-400 hover:text-zinc-700"
+              tabIndex={-1}
             >
-              {showCurrentPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+              {showCurrentPassword ? <EyeOff size={15} /> : <Eye size={15} />}
             </button>
           </div>
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
+          <label className="block text-xs font-medium text-zinc-700 mb-1">
             New Password
           </label>
           <div className="relative">
@@ -100,24 +99,23 @@ export const ChangePasswordModal = ({ isOpen, onClose }) => {
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               required
-              className="w-full pl-10 pr-10 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors"
+              className="w-full pl-9 pr-9 py-2 bg-white border border-zinc-200 rounded-lg text-zinc-900 text-sm focus:outline-none focus:border-zinc-900 transition-colors"
               placeholder="8-16 characters"
             />
-            <Lock size={16} className="absolute left-3.5 top-3.5 text-slate-400" />
+            <Lock size={15} className="absolute left-3 top-2.5 text-zinc-400" />
             <button
               type="button"
               onClick={() => setShowNewPassword(!showNewPassword)}
-              className="absolute right-3.5 top-3 text-slate-400 hover:text-slate-600 focus:outline-none transition-colors"
-              title={showNewPassword ? 'Hide password' : 'Show password'}
-              aria-label={showNewPassword ? 'Hide password' : 'Show password'}
+              className="absolute right-2.5 top-2.5 text-zinc-400 hover:text-zinc-700"
+              tabIndex={-1}
             >
-              {showNewPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+              {showNewPassword ? <EyeOff size={15} /> : <Eye size={15} />}
             </button>
           </div>
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1.5">
+          <label className="block text-xs font-medium text-zinc-700 mb-1">
             Confirm New Password
           </label>
           <div className="relative">
@@ -126,57 +124,55 @@ export const ChangePasswordModal = ({ isOpen, onClose }) => {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
-              className="w-full pl-10 pr-10 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-colors"
-              placeholder="Repeat new password"
+              className="w-full pl-9 pr-9 py-2 bg-white border border-zinc-200 rounded-lg text-zinc-900 text-sm focus:outline-none focus:border-zinc-900 transition-colors"
+              placeholder="Repeat password"
             />
-            <Lock size={16} className="absolute left-3.5 top-3.5 text-slate-400" />
+            <Lock size={15} className="absolute left-3 top-2.5 text-zinc-400" />
             <button
               type="button"
               onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              className="absolute right-3.5 top-3 text-slate-400 hover:text-slate-600 focus:outline-none transition-colors"
-              title={showConfirmPassword ? 'Hide password' : 'Show password'}
-              aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+              className="absolute right-2.5 top-2.5 text-zinc-400 hover:text-zinc-700"
+              tabIndex={-1}
             >
-              {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+              {showConfirmPassword ? <EyeOff size={15} /> : <Eye size={15} />}
             </button>
           </div>
         </div>
 
-        {/* Real-time rules checklist */}
-        <div className="p-3.5 bg-slate-50 border border-slate-150 rounded-xl space-y-1.5 text-xs text-slate-600">
-          <p className="font-semibold text-slate-700 mb-1">Password Requirements:</p>
-          <div className="flex items-center gap-2">
-            {hasLength ? <CheckCircle2 size={14} className="text-emerald-500" /> : <XCircle size={14} className="text-slate-300" />}
-            <span className={hasLength ? 'text-emerald-700 font-medium' : ''}>8 to 16 characters</span>
+        {/* Minimal requirements list */}
+        <div className="p-3 bg-zinc-50 border border-zinc-200 rounded-lg text-[11px] text-zinc-600 space-y-1">
+          <div className="flex items-center gap-1.5">
+            {hasLength ? <Check size={13} className="text-zinc-900" /> : <span className="w-3 h-3 inline-block rounded-full border border-zinc-300" />}
+            <span className={hasLength ? 'text-zinc-900 font-medium' : 'text-zinc-500'}>8–16 characters</span>
           </div>
-          <div className="flex items-center gap-2">
-            {hasUppercase ? <CheckCircle2 size={14} className="text-emerald-500" /> : <XCircle size={14} className="text-slate-300" />}
-            <span className={hasUppercase ? 'text-emerald-700 font-medium' : ''}>At least 1 uppercase letter</span>
+          <div className="flex items-center gap-1.5">
+            {hasUppercase ? <Check size={13} className="text-zinc-900" /> : <span className="w-3 h-3 inline-block rounded-full border border-zinc-300" />}
+            <span className={hasUppercase ? 'text-zinc-900 font-medium' : 'text-zinc-500'}>At least 1 uppercase letter</span>
           </div>
-          <div className="flex items-center gap-2">
-            {hasSpecial ? <CheckCircle2 size={14} className="text-emerald-500" /> : <XCircle size={14} className="text-slate-300" />}
-            <span className={hasSpecial ? 'text-emerald-700 font-medium' : ''}>At least 1 special character (!@#$%^&*...)</span>
+          <div className="flex items-center gap-1.5">
+            {hasSpecial ? <Check size={13} className="text-zinc-900" /> : <span className="w-3 h-3 inline-block rounded-full border border-zinc-300" />}
+            <span className={hasSpecial ? 'text-zinc-900 font-medium' : 'text-zinc-500'}>At least 1 special character</span>
           </div>
-          <div className="flex items-center gap-2">
-            {isMatch ? <CheckCircle2 size={14} className="text-emerald-500" /> : <XCircle size={14} className="text-slate-300" />}
-            <span className={isMatch ? 'text-emerald-700 font-medium' : ''}>Passwords match</span>
+          <div className="flex items-center gap-1.5">
+            {isMatch ? <Check size={13} className="text-zinc-900" /> : <span className="w-3 h-3 inline-block rounded-full border border-zinc-300" />}
+            <span className={isMatch ? 'text-zinc-900 font-medium' : 'text-zinc-500'}>Passwords match</span>
           </div>
         </div>
 
-        <div className="flex items-center justify-end gap-3 pt-2">
+        <div className="flex items-center justify-end gap-2 pt-2">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2.5 text-sm font-medium text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-xl transition-colors"
+            className="px-3.5 py-1.5 text-xs font-medium text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 rounded-md transition-colors"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={!isValid || loading}
-            className="px-5 py-2.5 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed rounded-xl shadow-sm shadow-indigo-200 transition-all"
+            className="px-4 py-1.5 text-xs font-medium text-white bg-zinc-900 hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed rounded-md transition-colors"
           >
-            {loading ? 'Updating...' : 'Update Password'}
+            {loading ? 'Updating...' : 'Save Password'}
           </button>
         </div>
       </form>

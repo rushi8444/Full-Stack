@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ratingsApi, storesApi, getErrorMessage } from '../api/client';
-import { Store, Star, Users, Calendar, AlertCircle, CheckCircle2, Plus, Sparkles } from 'lucide-react';
+import { Store, Star, Users, Calendar, AlertCircle, Plus, MapPin, Mail } from 'lucide-react';
 import StarRating from '../components/StarRating';
 import Modal from '../components/Modal';
 
@@ -9,7 +9,7 @@ export const OwnerDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  // Store Creation Modal (if owner does not have a store yet)
+  // Store Creation Modal
   const [isCreateStoreOpen, setIsCreateStoreOpen] = useState(false);
   const [storeForm, setStoreForm] = useState({ name: '', email: '', address: '' });
   const [storeFormError, setStoreFormError] = useState('');
@@ -44,12 +44,12 @@ export const OwnerDashboard = () => {
     try {
       await storesApi.createStore(storeForm, 'Store Owner');
       setStoreFormLoading(false);
-      setStoreFormSuccess('Store created successfully!');
+      setStoreFormSuccess('Store created successfully.');
       setTimeout(() => {
         setIsCreateStoreOpen(false);
         setStoreFormSuccess('');
         loadOwnerDashboard();
-      }, 1000);
+      }, 800);
     } catch (err) {
       setStoreFormLoading(false);
       setStoreFormError(getErrorMessage(err));
@@ -58,9 +58,9 @@ export const OwnerDashboard = () => {
 
   if (loading) {
     return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center text-slate-500">
-        <div className="animate-spin w-8 h-8 border-4 border-indigo-600 border-t-transparent rounded-full mx-auto mb-3" />
-        <p className="text-sm font-medium">Loading store dashboard...</p>
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-16 text-center text-zinc-400">
+        <div className="animate-spin w-5 h-5 border-2 border-zinc-900 border-t-transparent rounded-full mx-auto mb-2" />
+        <p className="text-xs">Loading store dashboard...</p>
       </div>
     );
   }
@@ -69,158 +69,157 @@ export const OwnerDashboard = () => {
   const ratings = dashboardData?.ratings || [];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 space-y-6">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">Store Owner Portal</h1>
-          <p className="text-sm text-slate-500">
-            Monitor your store's average ratings and customer feedback in real time.
+          <h1 className="text-lg font-semibold text-zinc-900 tracking-tight">Store Overview</h1>
+          <p className="text-xs text-zinc-500">
+            Ratings and customer feedback for your store.
           </p>
         </div>
 
         {!store && (
           <button
             onClick={() => setIsCreateStoreOpen(true)}
-            className="flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-xl shadow-sm shadow-indigo-200 transition-all"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-zinc-900 hover:bg-zinc-800 text-white text-xs font-medium rounded-lg transition-colors self-start sm:self-auto"
           >
-            <Plus size={16} />
-            <span>Create Your Store</span>
+            <Plus size={14} />
+            <span>Register Store</span>
           </button>
         )}
       </div>
 
       {error && (
-        <div className="p-4 bg-rose-50 border border-rose-200 rounded-2xl flex items-start gap-3 text-sm text-rose-700">
-          <AlertCircle size={18} className="shrink-0 mt-0.5 text-rose-500" />
+        <div className="p-3 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2 text-xs text-red-700">
+          <AlertCircle size={15} className="shrink-0 mt-0.5" />
           <span>{error}</span>
         </div>
       )}
 
-      {/* If Owner has no store registered */}
+      {/* When no store registered */}
       {!store ? (
-        <div className="bg-white rounded-3xl border border-slate-200/80 p-12 text-center max-w-xl mx-auto shadow-sm">
-          <div className="w-16 h-16 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center mx-auto mb-4">
-            <Store size={32} />
-          </div>
-          <h3 className="text-lg font-bold text-slate-900">No Store Registered Yet</h3>
-          <p className="mt-2 text-sm text-slate-500 max-w-md mx-auto">
-            You don't currently have a store linked to your account. You can register your store right now to start receiving customer ratings.
+        <div className="bg-white rounded-xl border border-zinc-200 p-12 text-center max-w-md mx-auto">
+          <Store size={32} className="mx-auto text-zinc-300 mb-3" />
+          <h2 className="text-sm font-semibold text-zinc-900">No store linked yet</h2>
+          <p className="mt-1 text-xs text-zinc-500">
+            Register your store to start receiving customer ratings.
           </p>
-          <div className="mt-6">
+          <div className="mt-4">
             <button
               onClick={() => setIsCreateStoreOpen(true)}
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-sm rounded-xl shadow-sm transition-all"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-zinc-900 hover:bg-zinc-800 text-white font-medium text-xs rounded-lg transition-colors"
             >
-              <Plus size={16} />
+              <Plus size={14} />
               <span>Register Store</span>
             </button>
           </div>
         </div>
       ) : (
         <>
-          {/* Store Metrics Summary Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Store Information */}
-            <div className="md:col-span-2 p-6 bg-gradient-to-br from-indigo-900 to-slate-900 text-white rounded-3xl shadow-xl shadow-slate-200/50 flex flex-col justify-between relative overflow-hidden">
-              <div className="absolute right-0 top-0 translate-x-8 -translate-y-8 w-48 h-48 bg-indigo-500/10 rounded-full blur-2xl pointer-events-none" />
+          {/* Store Info & Metrics Summary */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {/* Store Details Card */}
+            <div className="p-5 bg-white rounded-xl border border-zinc-200 flex flex-col justify-between">
               <div>
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-500/20 text-indigo-200 border border-indigo-500/30 mb-3">
-                  <Sparkles size={13} />
-                  <span>Active Registered Store</span>
-                </div>
-                <h2 className="text-2xl font-extrabold tracking-tight text-white">
+                <span className="text-[11px] font-medium text-zinc-400 uppercase tracking-wider block mb-1">
+                  Store Details
+                </span>
+                <h2 className="text-base font-semibold text-zinc-900 mb-2">
                   {store.store_name}
                 </h2>
-              </div>
-
-              <div className="mt-8 pt-6 border-t border-indigo-800/60 flex flex-wrap items-center justify-between gap-4">
-                <div className="flex items-center gap-2 text-sm text-indigo-100">
-                  <Users size={16} className="text-indigo-300" />
-                  <span>Total Submissions: <strong className="text-white font-bold">{ratings.length}</strong></span>
-                </div>
-                <div className="text-xs text-indigo-300">
-                  Real-time PostgreSQL analytics
+                <div className="space-y-1 text-xs text-zinc-500">
+                  <div className="flex items-center gap-1.5">
+                    <Mail size={12} className="text-zinc-400 shrink-0" />
+                    <span className="truncate">{store.store_email || '—'}</span>
+                  </div>
+                  <div className="flex items-start gap-1.5">
+                    <MapPin size={12} className="text-zinc-400 shrink-0 mt-0.5" />
+                    <span className="line-clamp-2">{store.store_address || '—'}</span>
+                  </div>
                 </div>
               </div>
             </div>
 
             {/* Average Rating Card */}
-            <div className="p-6 bg-white rounded-3xl border border-slate-200/80 shadow-sm flex flex-col items-center justify-center text-center">
-              <span className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">
-                Overall Store Rating
+            <div className="p-5 bg-white rounded-xl border border-zinc-200 flex flex-col justify-between">
+              <span className="text-[11px] font-medium text-zinc-400 uppercase tracking-wider block mb-1">
+                Average Rating
               </span>
-              <div className="text-5xl font-black text-slate-900 tracking-tight mb-2">
-                {parseFloat(store.average_rating || 0).toFixed(1)}
+              <div className="my-1">
+                <div className="text-3xl font-semibold text-zinc-900 tracking-tight mb-1">
+                  {parseFloat(store.average_rating || 0).toFixed(1)}
+                </div>
+                <StarRating rating={parseFloat(store.average_rating || 0)} size={18} />
               </div>
-              <div className="mb-2">
-                <StarRating rating={parseFloat(store.average_rating || 0)} size={24} />
+              <p className="text-[11px] text-zinc-400">Out of 5 stars</p>
+            </div>
+
+            {/* Total Reviews Card */}
+            <div className="p-5 bg-white rounded-xl border border-zinc-200 flex flex-col justify-between">
+              <span className="text-[11px] font-medium text-zinc-400 uppercase tracking-wider block mb-1">
+                Total Reviews
+              </span>
+              <div className="my-1">
+                <div className="text-3xl font-semibold text-zinc-900 tracking-tight">
+                  {ratings.length}
+                </div>
               </div>
-              <p className="text-xs text-slate-500">
-                Calculated from {ratings.length} customer review{ratings.length === 1 ? '' : 's'}
-              </p>
+              <p className="text-[11px] text-zinc-400">Customer submissions</p>
             </div>
           </div>
 
-          {/* Customer Reviews & Feedback Table */}
-          <div className="bg-white rounded-3xl border border-slate-200/80 shadow-sm overflow-hidden">
-            <div className="p-6 border-b border-slate-200/80 flex items-center justify-between">
-              <div>
-                <h3 className="text-base font-bold text-slate-900">Customer Feedback & Ratings</h3>
-                <p className="text-xs text-slate-500 mt-0.5">
-                  Customers who have rated your store.
-                </p>
-              </div>
-              <span className="text-xs font-semibold px-2.5 py-1 bg-slate-100 text-slate-700 rounded-full border border-slate-200">
-                {ratings.length} total rating{ratings.length === 1 ? '' : 's'}
+          {/* Customer Reviews Table */}
+          <div className="bg-white rounded-xl border border-zinc-200 overflow-hidden">
+            <div className="px-5 py-3.5 border-b border-zinc-200 flex items-center justify-between">
+              <h2 className="text-xs font-semibold text-zinc-900 uppercase tracking-wider">
+                Customer Ratings
+              </h2>
+              <span className="text-xs text-zinc-500">
+                {ratings.length} {ratings.length === 1 ? 'rating' : 'ratings'}
               </span>
             </div>
 
             <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse text-sm">
+              <table className="w-full text-left border-collapse text-xs">
                 <thead>
-                  <tr className="border-b border-slate-200 bg-slate-50/70 text-slate-500 text-xs uppercase tracking-wider font-semibold">
-                    <th className="py-3 px-6">Customer</th>
-                    <th className="py-3 px-6">Email Address</th>
-                    <th className="py-3 px-6">Location</th>
-                    <th className="py-3 px-6">Rating Given</th>
-                    <th className="py-3 px-6 text-right">Submitted Date</th>
+                  <tr className="border-b border-zinc-100 bg-zinc-50/60 text-zinc-500 font-medium">
+                    <th className="py-2.5 px-5">Customer</th>
+                    <th className="py-2.5 px-5">Email</th>
+                    <th className="py-2.5 px-5">Address</th>
+                    <th className="py-2.5 px-5">Rating</th>
+                    <th className="py-2.5 px-5 text-right">Date</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 text-slate-700">
+                <tbody className="divide-y divide-zinc-100 text-zinc-700">
                   {ratings.length === 0 ? (
                     <tr>
-                      <td colSpan={5} className="text-center py-12 text-slate-400">
-                        No ratings have been submitted for your store yet.
+                      <td colSpan={5} className="text-center py-10 text-zinc-400">
+                        No ratings have been submitted yet.
                       </td>
                     </tr>
                   ) : (
                     ratings.map((r, idx) => (
-                      <tr key={idx} className="hover:bg-slate-50/80 transition-colors">
-                        <td className="py-4 px-6 font-semibold text-slate-900">{r.name}</td>
-                        <td className="py-4 px-6 text-slate-600">{r.email}</td>
-                        <td className="py-4 px-6 max-w-xs truncate" title={r.address}>
+                      <tr key={idx} className="hover:bg-zinc-50/50 transition-colors">
+                        <td className="py-3 px-5 font-medium text-zinc-900">{r.name}</td>
+                        <td className="py-3 px-5 text-zinc-500">{r.email}</td>
+                        <td className="py-3 px-5 text-zinc-500 max-w-xs truncate" title={r.address}>
                           {r.address}
                         </td>
-                        <td className="py-4 px-6">
-                          <div className="inline-flex items-center gap-1.5 font-bold text-slate-900">
-                            <StarRating rating={parseFloat(r.rating)} size={16} />
-                            <span className="ml-1 text-sm">{parseFloat(r.rating).toFixed(1)}</span>
+                        <td className="py-3 px-5">
+                          <div className="inline-flex items-center gap-1 font-medium text-zinc-900">
+                            <StarRating rating={parseFloat(r.rating)} size={14} />
+                            <span className="ml-1 text-xs">{parseFloat(r.rating).toFixed(1)}</span>
                           </div>
                         </td>
-                        <td className="py-4 px-6 text-right text-xs text-slate-500">
-                          <div className="inline-flex items-center gap-1">
-                            <Calendar size={13} className="text-slate-400" />
-                            <span>
-                              {r.submitted_at
-                                ? new Date(r.submitted_at).toLocaleDateString('en-US', {
-                                    year: 'numeric',
-                                    month: 'short',
-                                    day: 'numeric',
-                                  })
-                                : '—'}
-                            </span>
-                          </div>
+                        <td className="py-3 px-5 text-right text-zinc-400">
+                          {r.submitted_at
+                            ? new Date(r.submitted_at).toLocaleDateString('en-US', {
+                                year: 'numeric',
+                                month: 'short',
+                                day: 'numeric',
+                              })
+                            : '—'}
                         </td>
                       </tr>
                     ))
@@ -236,25 +235,24 @@ export const OwnerDashboard = () => {
       <Modal
         isOpen={isCreateStoreOpen}
         onClose={() => setIsCreateStoreOpen(false)}
-        title="Create Your Store"
+        title="Register Store"
         maxWidth="max-w-md"
       >
-        <form onSubmit={handleCreateStore} className="space-y-4">
+        <form onSubmit={handleCreateStore} className="space-y-3.5">
           {storeFormError && (
-            <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-sm text-rose-700 flex items-start gap-2">
-              <AlertCircle size={16} className="shrink-0 mt-0.5" />
+            <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-xs text-red-700 flex items-start gap-2">
+              <AlertCircle size={15} className="shrink-0 mt-0.5" />
               <span>{storeFormError}</span>
             </div>
           )}
           {storeFormSuccess && (
-            <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-sm text-emerald-700 flex items-start gap-2">
-              <CheckCircle2 size={16} className="shrink-0 mt-0.5" />
+            <div className="p-3 bg-zinc-100 border border-zinc-200 rounded-lg text-xs text-zinc-900">
               <span>{storeFormSuccess}</span>
             </div>
           )}
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+            <label className="block text-xs font-medium text-zinc-700 mb-1">
               Store Name
             </label>
             <input
@@ -262,13 +260,13 @@ export const OwnerDashboard = () => {
               value={storeForm.name}
               onChange={(e) => setStoreForm({ ...storeForm, name: e.target.value })}
               required
-              placeholder="e.g. Modern Artisan Bakery"
-              className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+              placeholder="e.g. Artisan Bakery"
+              className="w-full px-3 py-2 bg-white border border-zinc-200 rounded-lg text-xs text-zinc-900 focus:outline-none focus:border-zinc-900"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+            <label className="block text-xs font-medium text-zinc-700 mb-1">
               Store Email
             </label>
             <input
@@ -276,39 +274,39 @@ export const OwnerDashboard = () => {
               value={storeForm.email}
               onChange={(e) => setStoreForm({ ...storeForm, email: e.target.value })}
               required
-              placeholder="owner@store.com"
-              className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+              placeholder="store@example.com"
+              className="w-full px-3 py-2 bg-white border border-zinc-200 rounded-lg text-xs text-zinc-900 focus:outline-none focus:border-zinc-900"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">
+            <label className="block text-xs font-medium text-zinc-700 mb-1">
               Store Address
             </label>
             <textarea
-              rows={3}
+              rows={2}
               value={storeForm.address}
               onChange={(e) => setStoreForm({ ...storeForm, address: e.target.value })}
               required
-              placeholder="Full physical street address..."
-              className="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 resize-none"
+              placeholder="Store street address..."
+              className="w-full px-3 py-2 bg-white border border-zinc-200 rounded-lg text-xs text-zinc-900 focus:outline-none focus:border-zinc-900 resize-none"
             />
           </div>
 
-          <div className="flex justify-end gap-3 pt-4 border-t border-slate-100">
+          <div className="flex justify-end gap-2 pt-2 border-t border-zinc-100">
             <button
               type="button"
               onClick={() => setIsCreateStoreOpen(false)}
-              className="px-4 py-2.5 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-xl"
+              className="px-3.5 py-1.5 text-xs font-medium text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 rounded-md transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={storeFormLoading}
-              className="px-5 py-2.5 text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 rounded-xl shadow-sm"
+              className="px-4 py-1.5 text-xs font-medium text-white bg-zinc-900 hover:bg-zinc-800 disabled:opacity-40 rounded-md transition-colors"
             >
-              {storeFormLoading ? 'Creating...' : 'Create Store'}
+              {storeFormLoading ? 'Saving...' : 'Create Store'}
             </button>
           </div>
         </form>

@@ -4,7 +4,7 @@ import { Star } from 'lucide-react';
 export const StarRating = ({
   rating = 0,
   maxStars = 5,
-  size = 20,
+  size = 18,
   interactive = false,
   onChange,
   disabled = false,
@@ -14,7 +14,7 @@ export const StarRating = ({
   const displayRating = interactive && hoverRating > 0 ? hoverRating : rating;
 
   return (
-    <div className="inline-flex items-center gap-1">
+    <div className="inline-flex items-center gap-0.5">
       {Array.from({ length: maxStars }, (_, index) => {
         const starValue = index + 1;
         const isFilled = starValue <= Math.round(displayRating);
@@ -27,19 +27,20 @@ export const StarRating = ({
             onClick={() => interactive && onChange && onChange(starValue)}
             onMouseEnter={() => interactive && !disabled && setHoverRating(starValue)}
             onMouseLeave={() => interactive && !disabled && setHoverRating(0)}
-            className={`transition-transform duration-100 ${
+            className={`p-0.5 transition-colors focus:outline-none ${
               interactive && !disabled
-                ? 'cursor-pointer hover:scale-125 focus:outline-none'
+                ? 'cursor-pointer hover:text-amber-500'
                 : 'cursor-default'
             }`}
             title={interactive ? `Rate ${starValue} star${starValue > 1 ? 's' : ''}` : `${rating} / ${maxStars}`}
+            aria-label={`Rating ${starValue} of ${maxStars}`}
           >
             <Star
               size={size}
               className={`transition-colors ${
                 isFilled
                   ? 'fill-amber-400 text-amber-500'
-                  : 'fill-slate-100 text-slate-300'
+                  : 'fill-zinc-100 text-zinc-300'
               }`}
             />
           </button>

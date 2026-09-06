@@ -11,22 +11,19 @@ export const Navbar = () => {
     switch (role) {
       case 'System Administrator':
         return {
-          icon: <ShieldCheck size={14} className="text-purple-600" />,
-          bg: 'bg-purple-50 border-purple-200 text-purple-700',
-          label: 'Administrator',
+          icon: <ShieldCheck size={13} className="text-zinc-700" />,
+          label: 'Admin',
         };
       case 'Store Owner':
         return {
-          icon: <ShoppingBag size={14} className="text-amber-600" />,
-          bg: 'bg-amber-50 border-amber-200 text-amber-700',
-          label: 'Store Owner',
+          icon: <ShoppingBag size={13} className="text-zinc-700" />,
+          label: 'Owner',
         };
       case 'Normal User':
       default:
         return {
-          icon: <UserCheck size={14} className="text-emerald-600" />,
-          bg: 'bg-emerald-50 border-emerald-200 text-emerald-700',
-          label: 'Consumer',
+          icon: <UserCheck size={13} className="text-zinc-700" />,
+          label: 'User',
         };
     }
   };
@@ -35,63 +32,52 @@ export const Navbar = () => {
 
   return (
     <>
-      <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b border-slate-200/80 transition-all">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          {/* Logo & App Name */}
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-indigo-500 flex items-center justify-center text-white shadow-md shadow-indigo-100">
-              <Store size={22} />
+      <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-sm border-b border-zinc-200">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
+          {/* Logo & Brand */}
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-zinc-900 text-white flex items-center justify-center">
+              <Store size={16} />
             </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="font-bold text-lg text-slate-900 tracking-tight">StoreSphere</span>
-                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 border border-slate-200">
-                  Portal
-                </span>
-              </div>
-              <p className="text-xs text-slate-400 hidden sm:block">Store Ratings & Management Platform</p>
-            </div>
+            <span className="font-semibold text-sm text-zinc-900 tracking-tight">Stores</span>
           </div>
 
-          {/* Right side: User Profile & Actions */}
-          <div className="flex items-center gap-3">
-            {/* User Details */}
-            <div className="hidden md:flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200/70">
-              <div className="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-700 font-bold flex items-center justify-center text-sm">
+          {/* Right: User & Actions */}
+          <div className="flex items-center gap-2 sm:gap-3">
+            {/* User Meta */}
+            <div className="flex items-center gap-2 pl-2 text-xs text-zinc-600">
+              <div className="w-7 h-7 rounded-md bg-zinc-100 border border-zinc-200 text-zinc-800 font-medium text-xs flex items-center justify-center">
                 {user?.name ? user.name[0].toUpperCase() : 'U'}
               </div>
-              <div className="text-left leading-tight">
-                <p className="text-sm font-semibold text-slate-800 truncate max-w-[150px]">{user?.name}</p>
-                <p className="text-xs text-slate-400 truncate max-w-[150px]">{user?.email}</p>
+              <div className="hidden sm:block text-left leading-tight">
+                <p className="font-medium text-zinc-800 truncate max-w-[140px]">{user?.name}</p>
+                <p className="text-[11px] text-zinc-400 truncate max-w-[140px]">{user?.email}</p>
               </div>
-              <div className={`flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full border ${roleInfo.bg} ml-1`}>
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md border border-zinc-200 bg-zinc-50 text-zinc-600 text-[11px] font-medium ml-1">
                 {roleInfo.icon}
                 <span>{roleInfo.label}</span>
-              </div>
+              </span>
             </div>
 
-            {/* Mobile role badge */}
-            <div className={`md:hidden flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-full border ${roleInfo.bg}`}>
-              {roleInfo.icon}
-              <span>{roleInfo.label}</span>
-            </div>
+            <div className="h-4 w-px bg-zinc-200 mx-1 hidden sm:block" />
 
-            {/* Change Password Button */}
+            {/* Change Password */}
             <button
               onClick={() => setIsPasswordModalOpen(true)}
-              className="p-2 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-xl transition-colors"
+              className="p-1.5 text-zinc-500 hover:text-zinc-900 hover:bg-zinc-100 rounded-md transition-colors"
               title="Change Password"
+              aria-label="Change Password"
             >
-              <KeyRound size={18} />
+              <KeyRound size={16} />
             </button>
 
-            {/* Logout Button */}
+            {/* Logout */}
             <button
               onClick={logout}
-              className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-rose-600 hover:text-rose-700 hover:bg-rose-50 rounded-xl border border-rose-100 transition-colors"
+              className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100 rounded-md border border-zinc-200 transition-colors"
               title="Sign Out"
             >
-              <LogOut size={16} />
+              <LogOut size={14} />
               <span className="hidden sm:inline">Logout</span>
             </button>
           </div>
